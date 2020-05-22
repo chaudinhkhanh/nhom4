@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Thương Mại Điện Tử</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">WebSiteName</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Trang chủ</a></li>
+      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Danh mục<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Sản phẩm 1</a></li>
+          <li><a href="#">Sản phẩm 2</a></li>
+          <li><a href="#">Sản phẩm 3</a></li>
+          <li><a href="#">Sản phẩm 4</a></li>
+          <li><a href="#">Sản phẩm 5</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Giới Thiệu</a></li>
+      <li><a href="#">Khuyến Mãi</a></li>
+      <li><a href="#">Liên Hệ</a></li>
+      <li><a href="#">Thành Viên</a></li>
+    </ul>
+        <form class="navbar-form navbar-right" action="/action_page.php">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search" name="search">
+        <div class="input-group-btn">
+          <button class="btn btn-default" type="submit">
+            <i class="glyphicon glyphicon-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+    <ul class="nav navbar-nav navbar-right">
+      {% if user.username %}
+      <!-- <p style="font-style: #FFFFFF"> Xin Chào {{user.username}}</p> -->
+      <span style="color: red">Xin chào {{user.username}}</span>
+      <p><a href="{% url 'logout' %}">Đăng Xuất</a></p>
+      {% else %}
+      <p><a href="{% url 'register' %}">Đăng Ký</a></p>|<a href="{% url 'login' %}">Đăng Nhập</a></p>
+
+      {% endif %}
+      <!-- <li><a href="#"><span class="glyphicon glyphicon-user"></span> Đăng Nhập</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Đăng Kí</a></li> -->
+    </ul>
+  </div>
+</nav>
+  
+
+ <div class="container">
+        <div id="categories-tab">
+            <ul class="nav nav-tabs">
+              {% for type in type_objs %}
+            
+                {% if forloop.first %}
+                    <li class="h4 active">
+                        <a id="tab-{{ type.name | slugify }}" href="#{{ type.name | slugify }}" data-toggle="tab" aria-expanded="true">
+                            <i class="fa fa-folder-o" aria-hidden="true"></i> &nbsp;
+                            {{ type.name }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="h4">
+                        <a id="tab-{{ type.name | slugify }}" href="#{{ type.name | slugify }}" data-toggle="tab" aria-expanded="false">
+                            <i class="fa fa-folder-o" aria-hidden="true"></i> &nbsp;
+                            {{ type.name }}
+                        </a>
+                    </li>
+                {% endif %}        
+            {% endfor %}                
+            </ul>
+            <div id="product-in-category" class="tab-content">
+            {% for type in type_objs %}
+                {% if forloop.first %}
+                    <div class="tab-pane fade active in" id="{{ type.name | slugify }}">
+                {% else %}
+                    <div class="tab-pane fade" id="{{ type.name | slugify }}">
+                {% endif %}
+                        <p>
+                        <div class="row post-grid">
+                            {% for product in type.product_set.all %}
+                                {% if product.quantity > 0 %}
+                                <div class="col-sm-4">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <a href="{% url 'product' product.id %}"><img src="/media/{{ product.image }}" /></a>
+                                        </div>
+                                    </div>
+                                    <p>
+                                        <p>
+                                        <span><i class="fa fa-dollar" aria-hidden="true"></i>&nbsp; {{product.price}}</span>
+                                        &nbsp; &nbsp; 
+                                        <span><i class="fa fa-cart-plus" aria-hidden="true"></i>&nbsp; {{product.quantity}}</span>
+                                        <a href="{% url 'product' product.id %}"><h4>{{ product.name }}</h4>        </a>    
+                                    </p>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>        
+            {% endfor %}
+            </div>
+        </div>
+        </div>
+
+</body>
+</html>
